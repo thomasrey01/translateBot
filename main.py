@@ -118,7 +118,7 @@ LANGUAGES = {
 async def translate(message):
     comm = message.content.split(" ")
     sentence = ' '.join(comm[2:])
-    await message.channel.send("Translating from " + LANGUAGES[translator.detect(sentence).lang] + ".")
+    await message.channel.send("Translating to " + LANGUAGES[comm[1]] + ".")
     await message.channel.send(translator.translate(sentence, dest=comm[1]).text)
 
 async def display_help(message):
