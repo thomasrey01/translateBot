@@ -158,4 +158,4 @@ async def on_message(message):
             messageStack.append(message.content)
 
 
-client.run(TOKEN)
+client.run('ODY1MDg5MTQ5MDk0ODU0Njc3.YO-7DQ.o2kjnhNb6644IWsPEpioY8bxf2o')
