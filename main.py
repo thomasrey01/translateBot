@@ -1,6 +1,8 @@
 from googletrans import Translator
 import discord
 import ast
+import requests
+
 translator = Translator()
 client = discord.Client()
 messageStack = []
@@ -12,7 +14,12 @@ async def translate(message):
     comm = message.content.split(" ")
     sentence = ' '.join(comm[2:])
     await message.channel.send("Translating to " + languages[comm[1]].capitalize() + ".")
-    await message.channel.send(translator.translate(sentence, dest=comm[1]).text)
+    translated = translator.translate(sentence, dest=comm[1]).text
+    await message.channel.send(translated)
+    url = 'https://translate.google.com/translate_tts?ie=UTF-8&tl=' + comm[1] + '-TR&client=tw-ob&q=' + '+'.join(translated.split(' '))
+    r = requests.get(url, allow_redirects=True)
+    f = open('pronunciation.mp3', 'wb').write(r.content)
+    await message.channel.send("Pronunciation: ", file=discord.File(r'pronunciation.mp3'))
 
 async def display_help(message):
     await message.channel.send("Here is a list of commands:\n"
@@ -47,9 +54,9 @@ async def on_message(message):
         await translate(message)
     else:
         lang = translator.detect(message.content)
-        if lang.lang != 'en':
-            await message.channel.send("The previous message was not in English (added to the stack). Type **!getTranslation** to translate\n"
-                                       + lang.)
+        if lang.lang != 'en' and lang.confidence > 0.6:
+            await message.channel.send("The previous message was not in English (added to the stack). Type **!getTranslation** to translate.\n"
+                                        "Confidence: " + str((lang.confidence * 100).__round__(2)) + "%.")
             messageStack.append(message.content)
 
 
