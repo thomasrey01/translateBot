@@ -37,6 +37,8 @@ async def on_ready():
 async def on_message(message):
     if message.author == client.user:
         return
+    if message.author.bot:
+        return
     if message.content.startswith("!ping"):
         await message.channel.send("pong!")
         print("pinged")
@@ -60,4 +62,4 @@ async def on_message(message):
             messageStack.append(message.content)
 
 
-client.run('ODY1MDg5MTQ5MDk0ODU0Njc3.YO-7DQ.o2kjnhNb6644IWsPEpioY8bxf2o')
+client.run('BOT_TOKEN')
