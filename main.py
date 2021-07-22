@@ -1,12 +1,15 @@
 from googletrans import Translator
 import discord
+import psycopg2
+import db
 import ast
 import requests
 
 translator = Translator()
 client = discord.Client()
 messageStack = []
-
+conn = db.initialise()
+# conn.cursor().execute('''DELETE * FROM languages''')
 file = open("languages.txt", "r")
 languages = ast.literal_eval(file.read())
 
@@ -26,7 +29,8 @@ async def display_help(message):
                                "**!translateHelp**: displays help\n"
                                "**!ping**: pings bot\n"
                                "**!translate LANGUAGE_PREFIX MESSAGE**: translates message into chosen language\n"
-                               "**!getTranslation**: translates most recent message which wasn't in english\n"
+                               "**!getTranslation**: translates most recent message which wasn't in the server's default language\n"
+                               "**!update LANGUAGE_PREFIX**: changes server's prefered language"
                                "For a list of language prefixes go to: https://py-googletrans.readthedocs.io/en/latest/#googletrans-languages")
 
 @client.event
@@ -35,6 +39,7 @@ async def on_ready():
 
 @client.event
 async def on_message(message):
+    db.check_table(message.guild.id, conn)
     if message.author == client.user:
         return
     if message.author.bot:
@@ -54,10 +59,14 @@ async def on_message(message):
         await display_help(message)
     elif message.content.startswith("!translate"):
         await translate(message)
+    elif message.content.startswith("!update"):
+        arguments = message.content.split(' ')
+        db.update_language(message.guild.id, arguments[1], conn)
     else:
         lang = translator.detect(message.content)
-        if lang.lang != 'en' and lang.confidence > 0.6:
-            await message.channel.send("The previous message was not in English (added to the stack). Type **!getTranslation** to translate.\n"
+        default_language = db.get_language(message.guild.id, conn)
+        if lang.lang != default_language and lang.confidence > 0.6:
+            await message.channel.send("The previous message was not in " + languages[default_language[0]].capitalize() + " added to the stack). Type **!getTranslation** to translate.\n"
                                         "Confidence: " + str((lang.confidence * 100).__round__(2)) + "%.")
             messageStack.append(message.content)
 
