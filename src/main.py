@@ -97,4 +97,4 @@ async def on_message(message):
             messageStack.append(message.content)
 
 
-client.run('ODY3NTYxMDE0NTA0OTgwNTIx.YPi5KA.V6sdM_eEQHUP8Niqcwy4qvMsDR0')
+client.run('BOT_TOKEN')
