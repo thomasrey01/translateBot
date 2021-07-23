@@ -2,10 +2,10 @@ import psycopg2
 
 def initialise():
     conn = psycopg2.connect(
-        host="ec2-34-240-75-196.eu-west-1.compute.amazonaws.com",
-        database="d897ishrgcmr7u",
-        user="isxhajtrtdvrcp",
-        password="c24be5116e2e4981b769224b49c99b3719b9d18cacee01ea16aed1fc11741584",
+        host="",
+        database="",
+        user="",
+        password="",
     )
     cur = conn.cursor()
     cur.execute('''CREATE TABLE IF NOT EXISTS languages(

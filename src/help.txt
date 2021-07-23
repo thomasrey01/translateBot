@@ -1,0 +1,8 @@
+Here is the list of commands
+displays the list of commands
+pings the bot
+translates message into chosen language
+translates the most recent message which wasn't in the server's default language
+changes server's preferred language
+gets the server's preferred language
+For a list of language prefixes go to
